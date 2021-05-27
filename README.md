@@ -1,4 +1,3 @@
-[![CircleCI](https://circleci.com/gh/trustedshops/robotframework-circlecilibrary.svg?style=svg&circle-token=69de5d6ada315347ab0243a5510919027686dfc0)](https://app.circleci.com/pipelines/github/trustedshops/robotframework-circlecilibrary)
 
 # robotframework-circlecilibrary
 
