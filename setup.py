@@ -31,10 +31,8 @@ def project_test_suite():
     return test_suite
 
 
-long_description = \
-"""robotframework-circlecilibrary is an extension library for the [robotframework](https://robotframework.org/)
-to trigger and mange circleci pipelines.
-"""
+with open('README.md') as f:
+    long_description = f.read()
 
 
 setup(
