@@ -33,3 +33,6 @@ class KeywordsIntegrationTest(KeywordsTestCase):
 
     def test_trigger_pipeline_with_tag(self):
         self._test_trigger_pipeline_with_tag()
+
+    def test_get_project(self):
+        self._test_get_project()

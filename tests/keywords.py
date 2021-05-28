@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from unittest import TestCase
+from CircleciLibrary.keywords import ProjectNotFoundError
 from CircleciLibrary.model import Project
 from CircleciLibrary import CircleciLibrary
 
@@ -54,7 +55,7 @@ class KeywordsTestCase(TestCase):
         for w in workflows:
             self.__validate_workflow(w)
 
-        circleci.workflows_completed(pipeline)
+        circleci.all_workflows_stopped(pipeline)
 
     def _test_trigger_pipeline_with_tag(self):
         circleci = CircleciLibrary(self.api_token)
@@ -67,3 +68,9 @@ class KeywordsTestCase(TestCase):
         self.assertIsNone(pipeline.vcs.branch)
         self.assertEqual('https://github.com/trustedshops/robotframework_circleci_test_dummy', pipeline.vcs.target_repository_url)
         self.assertEqual('GitHub', pipeline.vcs.provider_name)
+
+    def _test_get_project(self):
+        circleci = CircleciLibrary(self.api_token)
+        with self.assertRaises(ProjectNotFoundError):
+            circleci.get_project('NOT_FOUND-71C5FE3D-B2E2-4D2D-9271-6D6B292B576B')
+        return circleci.get_project('robotframework_circleci_test_dummy')

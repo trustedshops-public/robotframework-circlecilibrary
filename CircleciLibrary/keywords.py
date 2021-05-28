@@ -18,9 +18,21 @@ from CircleciLibrary.model import Project, Workflow, Pipeline, WorkflowList
 from pycircleci.api import Api, API_BASE_URL
 
 
-class WorkflowError(Exception):
+class WorkflowRunningError(Exception):
     """
-    this exception will be raised if the workflow is not completed successfully
+    this exception will be raised if the workflow is still running
+    """
+
+
+class WorkflowStatusError(Exception):
+    """
+    this exception will be raised if the workflow does not have the desired status
+    """
+
+
+class ProjectNotFoundError(Exception):
+    """
+    this exception will be raised if a project was not found by the given criteria
     """
 
 
@@ -37,19 +49,19 @@ class CircleciLibraryKeywords:
         self.api = Api(api_token, url=base_url)
 
     @keyword
-    def create_project(self, vcs: str, organisation: str, repository: str) -> Project:
+    def define_project(self, vcs_type: str, username: str, reponame: str) -> Project:
         """
-        create a project object
+        creates a project object
 
-        :param vcs: vcs type
-        :param organisation: project organisation
-        :param repository: name of the repository
+        :param vcs_type: vcs type
+        :param username: project organisation
+        :param reponame: name of the repository
         :return: Project object
         """
         return Project(
-            vcs=vcs,
-            organisation=organisation,
-            repository=repository
+            vcs_type=vcs_type,
+            username=username,
+            reponame=reponame
         )
 
     @keyword
@@ -72,11 +84,11 @@ class CircleciLibraryKeywords:
         :return: Pipeline object
         """
         response = self.api.trigger_pipeline(
-                username=project.organisation,
-                project=project.repository,
+                username=project.username,
+                project=project.reponame,
                 branch=branch,
                 tag=tag,
-                vcs_type=project.vcs,
+                vcs_type=project.vcs_type,
                 params=parameters
         )
         return Pipeline.from_json(response)
@@ -85,6 +97,7 @@ class CircleciLibraryKeywords:
     def get_pipeline(self, pipeline_id) -> Pipeline:
         """
         Get the information for a given pipeline
+
         :param pipeline_id: the id of a circleci pipeline
         :return: Pipeline object
         """
@@ -103,9 +116,9 @@ class CircleciLibraryKeywords:
         return WorkflowList.from_list(workflows)
 
     @keyword
-    def workflows_completed(self, pipeline: Pipeline) -> bool:
+    def all_workflows_stopped(self, pipeline: Pipeline) -> bool:
         """
-        Return True if all workflows of the given pipeline complete
+        Return True if all workflows of the given pipeline completed
 
         :param pipeline: circleci pipeline object
         :return: True if all workflows of this pipeline are complete
@@ -114,26 +127,58 @@ class CircleciLibraryKeywords:
         return workflows.completed()
 
     @keyword
-    def workflows_completed_with_status(self, pipeline: Pipeline, status: Workflow.Status) -> bool:
+    def all_workflows_should_be_stopped(self, pipeline: Pipeline):
         """
-        Return True if all workflows of the given pipeline completed with the desired status
+        Check if all workflows of the given pipeline stopped
 
         :param pipeline: circleci pipeline object
-        :param status: desired status
-        :return: True if all workflows of this pipeline are complete with the desired status
+        :raise: WorkflowError if not all workflows of this pipeline are stopped
         """
-        workflows = self.get_workflows(pipeline)
-        return workflows.completed() and workflows.overall_status(status)
+        if not self.all_workflows_stopped(pipeline):
+            raise WorkflowRunningError(f"Workflows still running for pipeline: {pipeline}")
 
     @keyword
-    def check_if_workflows_completed_with_status(self, pipeline: Pipeline, status: Workflow.Status):
+    def all_workflows_have_status(self, pipeline: Pipeline, status: Workflow.Status):
         """
-        Check if all workflows of the given pipeline completed with the desired status
+        :return: True if all workflows have the desired status
+        """
+        for w in self.get_workflows(pipeline):
+            if w.status != status:
+                return False
+        return True
+
+    @keyword
+    def all_workflows_should_have_the_status(self, pipeline: Pipeline, status: Workflow.Status):
+        """
+        Check if all workflows of the given pipeline stopped
 
         :param pipeline: circleci pipeline object
-        :param status: desired status
-        :raise: WorkflowError if not all workflows of this pipeline are complete with the desired status
+        :param status: desired workflow status
+        :raise: WorkflowError if not all workflows of this pipeline are stopped
         """
-        if not self.workflows_completed_with_status(pipeline, status):
-            raise WorkflowError(f"Workflows not completed with status {status.name} for pipeline: {pipeline}")
+        if not self.all_workflows_have_status(pipeline, status):
+            raise WorkflowStatusError(f"Workflows do not have the status {status.name} for pipeline: {pipeline}")
 
+    def _get_projects(self):
+        for p in self.api.get_projects():
+            yield Project.from_json(p)
+
+    @keyword
+    def get_projects(self):
+        """
+        :return: all projects of the current user
+        """
+        return list(self._get_projects())
+
+    @keyword
+    def get_project(self, name):
+        """
+        returns the desired project of the current user
+
+        :param name: name of the desired project
+        :return: a desired project of the current user
+        """
+        for p in self._get_projects():
+            if p.reponame == name:
+                return p
+        raise ProjectNotFoundError(f"project {name} was not found in the projects list of the current user")

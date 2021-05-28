@@ -18,9 +18,9 @@ Library           CircleciLibrary  api_token=%{CIRCLECI_API_TOKEN}
 
 *** Test Cases ***
 Trigger a circleci pipeline
-    ${project}                       Create Project         github        trustedshops
-                                     ...                    robotframework_circleci_test_dummy
-    ${pipeline}                      Trigger Pipeline       ${project}    tag=pipeline.robot
-    Wait Until Keyword Succeeds      2m                     2s
-                                     ...                    Check If Workflows Completed With Status
-                                                            ...    ${pipeline}    status=success
+    ${project}                                Get Project         robotframework_circleci_test_dummy
+    ${pipeline}                               Trigger Pipeline
+                                              ...                 ${project}    tag=pipeline.robot
+    Wait Until Keyword Succeeds               5m                  2s
+                                              ...                 All Workflows Should Be Stopped    ${pipeline}
+    All Workflows Should Have The Status      ${pipeline}         success

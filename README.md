@@ -17,15 +17,16 @@ Now you can trigger a pipeline and wait until it is complete:
 ```robotframework
 *** Settings ***
 Documentation     Handle circleci pipeline example
-Library           CircleciLibrary  %{CIRCLECI_API_TOKEN}
+Library           CircleciLibrary  api_token=%{CIRCLECI_API_TOKEN}
 
 *** Test Cases ***
 Trigger a circleci pipeline
-    ${project}                       Create Project         github        my-org      my-project
-    ${pipeline}                      Trigger Pipeline       ${project}    tag=1.0.0
-    Wait Until Keyword Succeeds      2m                     2s
-                                     ...                    Check If Workflows Completed With Status
-                                                            ...    ${pipeline}    status=success
+    ${project}                                Get Project         my-project
+    ${pipeline}                               Trigger Pipeline
+                                              ...                 ${project}    tag=2.0.1
+    Wait Until Keyword Succeeds               5m                  2s
+                                              ...                 All Workflows Should Be Stopped    ${pipeline}
+    All Workflows Should Have The Status      ${pipeline}         success
 ```
 
 ## Development

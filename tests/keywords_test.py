@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from unittest.mock import Mock, patch
+
+from CircleciLibrary.keywords import WorkflowRunningError, WorkflowStatusError
 from keywords import KeywordsTestCase
 from CircleciLibrary import CircleciLibrary
 from CircleciLibrary.model import Pipeline, Workflow
@@ -90,6 +92,10 @@ class KeywordsUnitTest(KeywordsTestCase):
             workflows(stopped=False, status='running'),
             workflows(stopped=False, status='running'),
             workflows(stopped=False, status='running'),
+            workflows(stopped=False, status='running'),
+            workflows(stopped=False, status='running'),
+            workflows(stopped=False, status='running'),
+            workflows(stopped=False, status='running'),
             workflows(stopped=True, status='success'),
             workflows(stopped=True, status='success'),
             workflows(stopped=True, status='success')
@@ -99,9 +105,15 @@ class KeywordsUnitTest(KeywordsTestCase):
 
         circleci = CircleciLibrary(self.api_token)
         pipeline = Pipeline.from_json(pipeline)
-        self.assertFalse(circleci.workflows_completed(pipeline))
-        self.assertTrue(circleci.workflows_completed_with_status(pipeline, Workflow.Status.SUCCESS))
-        circleci.check_if_workflows_completed_with_status(pipeline, Workflow.Status.SUCCESS)
+        self.assertFalse(circleci.all_workflows_stopped(pipeline))
+        self.assertTrue(circleci.all_workflows_have_status(pipeline, Workflow.Status.RUNNING))
+        self.assertFalse(circleci.all_workflows_have_status(pipeline, Workflow.Status.SUCCESS))
+        with self.assertRaises(WorkflowStatusError):
+            circleci.all_workflows_should_have_the_status(pipeline, Workflow.Status.SUCCESS)
+        with self.assertRaises(WorkflowRunningError):
+            circleci.all_workflows_should_be_stopped(pipeline)
+        circleci.all_workflows_should_have_the_status(pipeline, Workflow.Status.SUCCESS)
+        circleci.all_workflows_should_be_stopped(pipeline)
 
     @patch('CircleciLibrary.keywords.Api')
     def test_trigger_pipeline_with_tag(self, api_constructor_mock):
@@ -133,3 +145,50 @@ class KeywordsUnitTest(KeywordsTestCase):
             }
 
         self._test_trigger_pipeline_with_tag()
+
+    @patch('CircleciLibrary.keywords.Api')
+    def test_get_project(self, api_constructor_mock):
+        api_mock = Mock()
+        api_constructor_mock.return_value = api_mock
+        api_mock.get_projects.return_value = [
+            {
+                'branches': [],
+                'oss': False,
+                'reponame': 'robotframework_circleci_test_dummy',
+                'username': 'trustedshops',
+                'has_usable_key': False,
+                'vcs_type': 'github',
+                'language': None,
+                'vcs_url': 'https://github.com/trustedshops/robotframework_circleci_test_dummy',
+                'following': False,
+                'default_branch': 'main'
+            },
+            {
+                'branches': [],
+                'oss': False,
+                'reponame': 'repo2',
+                'username': 'my-org',
+                'has_usable_key': False,
+                'vcs_type': 'github',
+                'language': None,
+                'vcs_url': 'https://github.com/my-org/repo-1',
+                'following': False,
+                'default_branch': 'main'
+            },
+            {
+                'branches': [],
+                'oss': False,
+                'reponame': 'repo3',
+                'username': 'my-org',
+                'has_usable_key': False,
+                'vcs_type': 'github',
+                'language': None,
+                'vcs_url': 'https://github.com/my-org/repo-1',
+                'following': False,
+                'default_branch': 'main'
+            }
+        ]
+        project = self._test_get_project()
+        self.assertEqual('robotframework_circleci_test_dummy', project.reponame)
+        self.assertEqual('trustedshops', project.username)
+        self.assertEqual('github', project.vcs_type)

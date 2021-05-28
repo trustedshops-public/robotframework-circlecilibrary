@@ -21,14 +21,22 @@ from enum import Enum, unique
 @dataclass
 class Project:
     """circleci project"""
-    organisation: str
-    repository: str
-    vcs: str
+    @staticmethod
+    def from_json(d: dict):
+        return Project(
+            vcs_type=d['vcs_type'],
+            username=d['username'],
+            reponame=d['reponame']
+        )
 
-    def __init__(self, vcs: str, organisation: str, repository: str):
-        self.vcs = vcs
-        self.organisation = organisation
-        self.repository = repository
+    username: str
+    reponame: str
+    vcs_type: str
+
+    def __init__(self, vcs_type: str, username: str, reponame: str):
+        self.vcs_type = vcs_type
+        self.username = username
+        self.reponame = reponame
 
 
 @dataclass
