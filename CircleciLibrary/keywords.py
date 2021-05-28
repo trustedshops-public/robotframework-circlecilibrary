@@ -132,7 +132,7 @@ class CircleciLibraryKeywords:
         Check if all workflows of the given pipeline stopped
 
         :param pipeline: circleci pipeline object
-        :raise: WorkflowError if not all workflows of this pipeline are stopped
+        :raise: WorkflowRunningError if not all workflows of this pipeline are stopped
         """
         if not self.all_workflows_stopped(pipeline):
             raise WorkflowRunningError(f"Workflows still running for pipeline: {pipeline}")
@@ -150,11 +150,11 @@ class CircleciLibraryKeywords:
     @keyword
     def all_workflows_should_have_the_status(self, pipeline: Pipeline, status: Workflow.Status):
         """
-        Check if all workflows of the given pipeline stopped
+        Check if all workflows have the desired status
 
         :param pipeline: circleci pipeline object
         :param status: desired workflow status
-        :raise: WorkflowError if not all workflows of this pipeline are stopped
+        :raise: WorkflowStatusError if not all workflows have the desired status
         """
         if not self.all_workflows_have_status(pipeline, status):
             raise WorkflowStatusError(f"Workflows do not have the status {status.name} for pipeline: {pipeline}")
@@ -176,7 +176,8 @@ class CircleciLibraryKeywords:
         returns the desired project of the current user
 
         :param name: name of the desired project
-        :return: a desired project of the current user
+        :return: the desired project of the current user
+        :raise: ProjectNotFoundError if no project was found for the given name
         """
         for p in self._get_projects():
             if p.reponame == name:
