@@ -61,5 +61,5 @@ setup(
     url='https://github.com/trustedshops-public/robotframework-circlecilibrary',
     license='Apache License 2.0',
     platforms='any',
-    python_requires='>3.9.0'
+    python_requires='>=3.9.0'
 )
