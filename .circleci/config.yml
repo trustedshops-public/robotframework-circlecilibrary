@@ -1,0 +1,42 @@
+---
+version: 2.1
+
+commands:
+  unittests:
+    steps:
+      
+      - checkout
+
+      - run:
+          name: install library
+          command: ./setup.py install
+
+      - run:
+          name: install tox
+          command: pip3 install tox
+        
+      - run:
+          name: install library
+          command: tox
+
+jobs:
+  test:
+    docker:
+      - image: circleci/python:3.10.0-node
+
+    steps:
+      - unittests
+      
+
+workflows:
+  version: 2
+
+  test:
+    jobs:
+      - test:
+          filters:
+            tags:
+              only: /.*/
+
+
+
