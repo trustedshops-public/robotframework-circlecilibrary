@@ -115,7 +115,13 @@ class CircleciLibraryKeywords:
         :return: list of workflows object
         """
         response = trace(self.api.get_pipeline_workflow(pipeline.id))
-        workflows = [Workflow.from_json(i) for i in response['items']]
+        if isinstance(response, list):
+            workflow_items = response
+        elif isinstance(response, dict):
+            workflow_items = response['items']
+        else:
+            raise RuntimeError(f"list or dict expected for the response: {response}")
+        workflows = [Workflow.from_json(w) for w in workflow_items]
         return WorkflowList.from_list(workflows)
 
     @keyword
