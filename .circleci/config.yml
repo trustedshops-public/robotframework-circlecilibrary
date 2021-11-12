@@ -1,0 +1,49 @@
+---
+version: 2.1
+
+commands:
+  unittests:
+    steps:
+      
+      - checkout
+
+      - run:
+          name: install library
+          command: ./setup.py install --user
+
+      - run:
+          name: install tox
+          command: pip3 install tox==3.24
+        
+      - run:
+          name: run tests
+          command: tox
+
+      - store_artifacts:
+          path: test-results
+          destination: test-results
+
+      - store_test_results:
+          path: test-results
+
+jobs:
+  test:
+    docker:
+      - image: circleci/python:3.10.0-node
+
+    steps:
+      - unittests
+      
+
+workflows:
+  version: 2
+
+  test:
+    jobs:
+      - test:
+          filters:
+            tags:
+              only: /.*/
+
+
+
