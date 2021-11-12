@@ -13,7 +13,7 @@ commands:
 
       - run:
           name: install tox
-          command: pip3 install tox
+          command: pip3 install tox==3.24
         
       - run:
           name: run tests
