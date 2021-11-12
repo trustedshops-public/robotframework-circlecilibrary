@@ -15,6 +15,7 @@ limitations under the License.
 """
 from robot.api.deco import library, keyword
 from CircleciLibrary.model import Project, Workflow, Pipeline, WorkflowList
+from CircleciLibrary.log import trace
 from pycircleci.api import Api, API_BASE_URL
 
 
@@ -83,13 +84,15 @@ class CircleciLibraryKeywords:
         :param parameters:  additional pipeline parameters (default: {})
         :return: Pipeline object
         """
-        response = self.api.trigger_pipeline(
+        response = trace(
+            self.api.trigger_pipeline(
                 username=project.username,
                 project=project.reponame,
                 branch=branch,
                 tag=tag,
                 vcs_type=project.vcs_type,
                 params=parameters
+            )
         )
         return Pipeline.from_json(response)
 
@@ -101,7 +104,7 @@ class CircleciLibraryKeywords:
         :param pipeline_id: the id of a circleci pipeline
         :return: Pipeline object
         """
-        return Pipeline.from_json(self.api.get_pipeline(pipeline_id))
+        return Pipeline.from_json(trace(self.api.get_pipeline(pipeline_id)))
 
     @keyword
     def get_workflows(self, pipeline: Pipeline) -> WorkflowList:
@@ -111,7 +114,7 @@ class CircleciLibraryKeywords:
         :param pipeline: circleci pipeline object
         :return: list of workflows object
         """
-        response = self.api.get_pipeline_workflow(pipeline.id)
+        response = trace(self.api.get_pipeline_workflow(pipeline.id))
         workflows = [Workflow.from_json(i) for i in response['items']]
         return WorkflowList.from_list(workflows)
 
@@ -160,7 +163,7 @@ class CircleciLibraryKeywords:
             raise WorkflowStatusError(f"Workflows do not have the status {status.name} for pipeline: {pipeline}")
 
     def _get_projects(self):
-        for p in self.api.get_projects():
+        for p in trace(self.api.get_projects()):
             yield Project.from_json(p)
 
     @keyword
