@@ -33,7 +33,7 @@ Trigger a circleci pipeline
 
 Run the setup to install all dependencies.
 ```sh
-./setup.py install
+pip install .
 ```
 
 ### Build and Run

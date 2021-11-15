@@ -39,6 +39,53 @@ class KeywordsUnitTest(KeywordsTestCase):
         self.assertIsNotNone(workflow.pipeline_id)
         self.assertIsNotNone(workflow.project_slug)
 
+    def workflows(self, stopped: bool, status: str):
+            return {
+                'items': [
+                    self.workflow_item(stopped, status)
+                ]
+            }
+
+    def workflow_item(self, stopped: bool, status: str):
+        return {
+            'pipeline_id': 'E57868E8-9533-4625-AD83-F2AB2ABB70BD',
+            'id': '0A3EF846-8A63-4851-98E2-055486715DEF',
+            'name': 'build',
+            'project_slug': 'gh/trustedshops/circleci_api_test_dummy',
+            'status': status,
+            'started_by': 'DA2E42D1-DD08-4D4F-9E78-1B0C3C4D3183',
+            'pipeline_number': 134,
+            'created_at': '2021-05-21T14:39:08Z',
+            'stopped_at': '2021-05-21T14:40:08Z' if stopped else None
+        }
+
+    @patch('CircleciLibrary.keywords.Api')
+    def test_get_workflows(self, api_constructor_mock):
+        api_mock = Mock()
+        api_constructor_mock.return_value = api_mock
+
+        api_mock.get_pipeline_workflow = Mock()
+        api_mock.get_pipeline_workflow.side_effect = [
+            [ self.workflow_item(stopped=True, status='success') ],
+            self.workflows(stopped=True, status='success'),
+            "Wrong Object"
+        ]
+
+        pipeline = Pipeline(pipeline_id="ID",
+            number=1,
+            state="",
+            created_at=None,
+            updated_at=None,
+            errors=[],
+            vcs=None)
+
+        circleci = CircleciLibrary(self.api_token)
+        response = circleci.get_workflows(pipeline)
+        self.assertEqual('0A3EF846-8A63-4851-98E2-055486715DEF', response[0].id)
+        response = circleci.get_workflows(pipeline)
+        self.assertEqual('0A3EF846-8A63-4851-98E2-055486715DEF', response[0].id)
+        self.assertRaises(RuntimeError, circleci.get_workflows, pipeline)
+
     @patch('CircleciLibrary.keywords.Api')
     def test_trigger_pipeline(self, api_constructor_mock):
         api_mock = Mock()
@@ -70,35 +117,18 @@ class KeywordsUnitTest(KeywordsTestCase):
                 }
             }
 
-        def workflows(stopped: bool, status: str):
-            return {
-                'items': [
-                    {
-                        'pipeline_id': 'E57868E8-9533-4625-AD83-F2AB2ABB70BD',
-                        'id': '0A3EF846-8A63-4851-98E2-055486715DEF',
-                        'name': 'build',
-                        'project_slug': 'gh/trustedshops/circleci_api_test_dummy',
-                        'status': status,
-                        'started_by': 'DA2E42D1-DD08-4D4F-9E78-1B0C3C4D3183',
-                        'pipeline_number': 134,
-                        'created_at': '2021-05-21T14:39:08Z',
-                        'stopped_at': '2021-05-21T14:40:08Z' if stopped else None
-                    }
-                ]
-            }
-
         api_mock.get_pipeline_workflow = Mock()
         api_mock.get_pipeline_workflow.side_effect = [
-            workflows(stopped=False, status='running'),
-            workflows(stopped=False, status='running'),
-            workflows(stopped=False, status='running'),
-            workflows(stopped=False, status='running'),
-            workflows(stopped=False, status='running'),
-            workflows(stopped=False, status='running'),
-            workflows(stopped=False, status='running'),
-            workflows(stopped=True, status='success'),
-            workflows(stopped=True, status='success'),
-            workflows(stopped=True, status='success')
+            [ self.workflow_item(stopped=False, status='running') ],
+            self.workflows(stopped=False, status='running'),
+            self.workflows(stopped=False, status='running'),
+            self.workflows(stopped=False, status='running'),
+            self.workflows(stopped=False, status='running'),
+            self.workflows(stopped=False, status='running'),
+            self.workflows(stopped=False, status='running'),
+            self.workflows(stopped=True, status='success'),
+            self.workflows(stopped=True, status='success'),
+            self.workflows(stopped=True, status='success')
         ]
 
         self._test_trigger_pipeline_with_branch_main()
