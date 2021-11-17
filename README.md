@@ -34,6 +34,19 @@ Trigger a circleci pipeline
     All Workflows Should Have The Status      ${pipeline}         success
 ```
 
+### Tracing
+
+robotframework-circlecilibrary will log all return values received from the circleci api:
+
+    robot --loglevel=TRACE pipeline.robot
+
+## Releases
+
+* 0.1.3 - bugfix for circleci get workflows for pipeline, add tracing
+* 0.1.2 - make library compatible for python >=3.9.0
+* 0.1.1 - fix documentation
+* 0.1.0 - initial release
+
 ## Development
 
 Run the setup to install all dependencies.
