@@ -1,6 +1,11 @@
 
 # robotframework-circlecilibrary
 
+[![GitHub License](https://img.shields.io/badge/license-Apache--2-lightgrey.svg)](https://github.com/trustedshops-public/robotframework-circlecilibrary/blob/main/LICENSE)
+[![pre-commit](https://img.shields.io/badge/%E2%9A%93%20%20pre--commit-enabled-success)](https://pre-commit.com/)
+[![CircleCI](https://circleci.com/gh/trustedshops-public/robotframework-circlecilibrary/tree/main.svg?style=shield)](https://circleci.com/gh/trustedshops-public/robotframework-circlecilibrary/tree/main)
+[![PyPI version](https://badge.fury.io/py/robotframework-circlecilibrary.svg)](https://pypi.org/project/robotframework-circlecilibrary)
+
 robotframework-circlecilibrary is an extension library for the [robotframework](https://robotframework.org/)
 to trigger and mange circleci pipelines.
 
