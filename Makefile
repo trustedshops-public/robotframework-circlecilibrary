@@ -13,7 +13,7 @@ clean:
 	rm -rf dist
 
 build: test
-	pip install wheel
+	pip install wheel twine
 	python3 setup.py bdist_wheel sdist
 
 test_deploy: build
