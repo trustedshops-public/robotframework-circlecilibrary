@@ -54,6 +54,7 @@ Run the setup to install all dependencies.
 pip install .
 ```
 
+
 ### Build and Run
 
 #### Run Tests
@@ -69,6 +70,13 @@ After that you can run the test via tox:
 ```sh
 tox
 ```
+
+## Deployment
+
+1. Increase version number in CircleciLibrary/\_\_init\_\_.py.
+2. Create a tag in GitHub for the version number.
+3. Use the Makefile commands to build / test / deploy.
+
 
 ## License
 
