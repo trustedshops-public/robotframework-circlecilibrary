@@ -75,7 +75,27 @@ tox
 
 1. Increase version number in CircleciLibrary/\_\_init\_\_.py.
 2. Create a tag in GitHub for the version number.
-3. Use the Makefile commands to build / test / deploy.
+3. Create pip account configuration file in $HOME/.pypirc:
+```
+[distutils]
+    index-servers =
+    pip-test-account
+    pip-prod-account
+
+[pip-test-account]
+    repository = https://test.pypi.org/legacy/
+    username = __token__
+    password = <generate your api token on https://test.pypi.org>
+
+[pip-prod-account]
+    repository = https://upload.pypi.org/legacy/
+    username = __token__
+    password = <generate your api token on https://pypi.org>
+```
+4. Try a test deployment: 
+```make test_deploy```
+5. If successful, deploy: 
+```make deploy```
 
 
 ## License
