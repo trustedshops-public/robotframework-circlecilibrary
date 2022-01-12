@@ -29,7 +29,7 @@ commands:
 jobs:
   test:
     docker:
-      - image: circleci/python:3.10.0-node
+      - image: cimg/python:3.9-node
 
     steps:
       - unittests
