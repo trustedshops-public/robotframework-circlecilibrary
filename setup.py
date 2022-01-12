@@ -55,6 +55,7 @@ setup(
     packages=find_packages(exclude=("tests",)),
     test_suite="setup.project_test_suite",
     install_requires=[
+      'requests>=2.0.1'
       'pycircleci>=0.3.2',
       'robotframework>=4.0.0'
     ],
