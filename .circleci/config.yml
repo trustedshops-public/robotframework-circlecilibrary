@@ -16,8 +16,14 @@ commands:
           command: pip3 install tox==3.24
         
       - run:
-          name: run tests
+          name: run unit tests
           command: tox
+
+      - run:
+          name: run integration tests
+          command: |
+            robot examples/pipeline-for-tag-1.0.0.robot
+
 
       - store_artifacts:
           path: test-results
