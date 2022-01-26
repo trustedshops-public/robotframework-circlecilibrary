@@ -9,7 +9,7 @@ commands:
 
       - run:
           name: install library
-          command: ./setup.py install --user
+          command: ./setup.py install
 
       - run:
           name: install tox
