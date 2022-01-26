@@ -8,8 +8,10 @@ commands:
       - checkout
 
       - run:
-          name: install library
-          command: ./setup.py install
+          name: install libraries
+          command: |
+            python3 setup.py install
+            pip3 install pycircleci requests robotframework
 
       - run:
           name: install tox
