@@ -6,13 +6,12 @@ commands:
     steps:
       - checkout
       - run:
-          name: Install libraries
+          name: Install dependencies
           command: |
+            pip3 install -r requirements.txt
+            pip3 install -r requirements-dev.txt
+
             python3 setup.py install
-            pip3 install pycircleci requests robotframework
-      - run:
-          name: Install tox
-          command: pip3 install tox==3.24
       - run:
           name: Run unit tests
           command: tox
