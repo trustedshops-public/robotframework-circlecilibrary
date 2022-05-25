@@ -4,33 +4,21 @@ version: 2.1
 commands:
   unittests:
     steps:
-      
       - checkout
-
       - run:
-          name: install libraries
+          name: Install libraries
           command: |
             python3 setup.py install
             pip3 install pycircleci requests robotframework
-
       - run:
-          name: install tox
+          name: Install tox
           command: pip3 install tox==3.24
-        
       - run:
-          name: run unit tests
+          name: Run unit tests
           command: tox
-
-      - run:
-          name: run integration tests
-          command: |
-            robot examples/pipeline-for-tag-1.0.0.robot
-            robot examples/pipeline-with-parameter.robot
-
       - store_artifacts:
           path: test-results
           destination: test-results
-
       - store_test_results:
           path: test-results
 
@@ -38,20 +26,14 @@ jobs:
   test:
     docker:
       - image: cimg/python:3.9-node
-
     steps:
       - unittests
-      
 
 workflows:
   version: 2
-
   test:
     jobs:
       - test:
           filters:
             tags:
               only: /.*/
-
-
-
