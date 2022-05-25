@@ -34,6 +34,8 @@ def project_test_suite():
 with open('README.md') as f:
     long_description = f.read()
 
+with open("requirements.txt", "r") as requirements_file:
+    requirements = requirements_file.readlines()
 
 setup(
     name='robotframework-circlecilibrary',
@@ -54,11 +56,7 @@ setup(
     ],
     packages=find_packages(exclude=("tests",)),
     test_suite="setup.project_test_suite",
-    install_requires=[
-      'requests>=2.0.1'
-      'pycircleci>=0.3.2',
-      'robotframework>=4.0.0'
-    ],
+    install_requires=requirements,
     url='https://github.com/trustedshops-public/robotframework-circlecilibrary',
     license='Apache License 2.0',
     platforms='any',

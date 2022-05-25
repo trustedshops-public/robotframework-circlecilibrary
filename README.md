@@ -92,9 +92,9 @@ tox
     username = __token__
     password = <generate your api token on https://pypi.org>
 ```
-4. Try a test deployment: 
+4. Try a test deployment:
 ```make test_deploy```
-5. If successful, deploy: 
+5. If successful, deploy:
 ```make deploy```
 
 
