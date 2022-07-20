@@ -15,13 +15,13 @@ limitations under the License.
 """
 __version__ = '0.1.3'
 
+from robot.api.deco import library
+
 from .keywords import CircleciLibraryKeywords
 
 
+@library(version=__version__, scope="GLOBAL")
 class CircleciLibrary(CircleciLibraryKeywords):
     """
     circleci keywords
     """
-
-
-

@@ -2,9 +2,8 @@
 version: 2.1
 
 commands:
-  unittests:
+  install:
     steps:
-      - checkout
       - run:
           name: Install dependencies
           command: |
@@ -12,6 +11,8 @@ commands:
             pip3 install -r requirements-dev.txt
 
             python3 setup.py install
+  unittests:
+    steps:
       - run:
           name: Run unit tests
           command: tox
@@ -26,7 +27,24 @@ jobs:
     docker:
       - image: cimg/python:3.9-node
     steps:
+      - checkout
+      - install
       - unittests
+  generate-docs:
+    docker:
+      - image: cimg/python:3.9-node
+    steps:
+      - checkout
+      - install
+      - run:
+          name: Build robotframework html docs with libdoc
+          command: make generate-docs
+      - run:
+          name: Publish github pages
+          command: |
+            git config user.email "no-reply@trustedshops.com"
+            git config user.name "trustedshops-public-cns-bot"
+            npx gh-pages@2.0.1 --dist docs/ --message "docs: Update github pages [ci skip]"
 
 workflows:
   version: 2
@@ -36,3 +54,10 @@ workflows:
           filters:
             tags:
               only: /.*/
+      - generate-docs:
+          filters:
+            branches:
+              only:
+                - main
+          requires:
+            - test
