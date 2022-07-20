@@ -6,7 +6,6 @@ checkout_current_version:
 
 test: checkout_current_version
 	python3 setup.py install
-	pip install tox
 	tox
 
 clean:
@@ -21,3 +20,6 @@ test_deploy: build
 
 deploy: build
 	twine upload --repository pip-prod-account  dist/*
+
+generate-docs:
+	export INIT_FOR_LIBDOC_ONLY=1 && python3 -m robot.libdoc --docformat rest  CircleciLibrary/ docs/index.html

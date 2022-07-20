@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+from os import environ
+
 from robot.api.deco import library, keyword
 from CircleciLibrary.model import Project, Workflow, Pipeline, WorkflowList
 from CircleciLibrary.log import trace
@@ -37,16 +39,18 @@ class ProjectNotFoundError(Exception):
     """
 
 
-@library
 class CircleciLibraryKeywords:
     """
     circleci keywords
     """
-    def __init__(self, api_token, base_url=API_BASE_URL):
+
+    def __init__(self, api_token=None, base_url=API_BASE_URL):
         """
         :param api_token: circleci api token
         :param base_url: circleci base url (default: pycircleci.api.API_BASE_URL)
         """
+        if "1" == environ.get('INIT_FOR_LIBDOC_ONLY', "0"):
+            return
         self.api = Api(api_token, url=base_url)
 
     @keyword
@@ -57,6 +61,7 @@ class CircleciLibraryKeywords:
         :param vcs_type: vcs type
         :param username: project organisation
         :param reponame: name of the repository
+
         :return: Project object
         """
         return Project(
@@ -82,6 +87,7 @@ class CircleciLibraryKeywords:
         :param tag: the tag to build
             Defaults to None. Cannot be used with the ``branch`` parameter.
         :param parameters:  additional pipeline parameters (default: {})
+
         :return: Pipeline object
         """
         response = trace(
@@ -97,11 +103,12 @@ class CircleciLibraryKeywords:
         return Pipeline.from_json(response)
 
     @keyword
-    def get_pipeline(self, pipeline_id) -> Pipeline:
+    def get_pipeline(self, pipeline_id: int) -> Pipeline:
         """
         Get the information for a given pipeline
 
         :param pipeline_id: the id of a circleci pipeline
+
         :return: Pipeline object
         """
         return Pipeline.from_json(trace(self.api.get_pipeline(pipeline_id)))
@@ -112,6 +119,7 @@ class CircleciLibraryKeywords:
         Get the information for all workflow of a given pipeline
 
         :param pipeline: circleci pipeline object
+
         :return: list of workflows object
         """
         response = trace(self.api.get_pipeline_workflow(pipeline.id))
@@ -130,6 +138,7 @@ class CircleciLibraryKeywords:
         Return True if all workflows of the given pipeline completed
 
         :param pipeline: circleci pipeline object
+
         :return: True if all workflows of this pipeline are complete
         """
         workflows = self.get_workflows(pipeline)
@@ -141,6 +150,7 @@ class CircleciLibraryKeywords:
         Check if all workflows of the given pipeline stopped
 
         :param pipeline: circleci pipeline object
+
         :raise: WorkflowRunningError if not all workflows of this pipeline are stopped
         """
         if not self.all_workflows_stopped(pipeline):
@@ -163,6 +173,7 @@ class CircleciLibraryKeywords:
 
         :param pipeline: circleci pipeline object
         :param status: desired workflow status
+
         :raise: WorkflowStatusError if not all workflows have the desired status
         """
         if not self.all_workflows_have_status(pipeline, status):
@@ -180,12 +191,14 @@ class CircleciLibraryKeywords:
         return list(self._get_projects())
 
     @keyword
-    def get_project(self, name):
+    def get_project(self, name: str):
         """
         returns the desired project of the current user
 
         :param name: name of the desired project
+
         :return: the desired project of the current user
+
         :raise: ProjectNotFoundError if no project was found for the given name
         """
         for p in self._get_projects():
