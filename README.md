@@ -1,7 +1,7 @@
 
 # robotframework-circlecilibrary
 
-[![GitHub License](https://img.shields.io/badge/license-Apache--2-lightgrey.svg)](https://github.com/trustedshops-public/robotframework-circlecilibrary/blob/main/LICENSE)
+[![GitHub License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/trustedshops-public/circleci-orb-semantic-release/blob/main/LICENSE)
 [![pre-commit](https://img.shields.io/badge/%E2%9A%93%20%20pre--commit-enabled-success)](https://pre-commit.com/)
 [![CircleCI](https://circleci.com/gh/trustedshops-public/robotframework-circlecilibrary/tree/main.svg?style=shield)](https://circleci.com/gh/trustedshops-public/robotframework-circlecilibrary/tree/main)
 [![PyPI version](https://badge.fury.io/py/robotframework-circlecilibrary.svg)](https://pypi.org/project/robotframework-circlecilibrary)
@@ -96,9 +96,3 @@ tox
 ```make test_deploy```
 5. If successful, deploy:
 ```make deploy```
-
-
-## License
-
-robotframework-circlecilibrary is open source software provided under the [Apache License
-2.0](http://apache.org/licenses/LICENSE-2.0)

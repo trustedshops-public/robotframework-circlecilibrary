@@ -20,8 +20,8 @@ Pull requests are the best way to propose changes to the codebase (we use [Circl
 5. Make sure your code and commit lints.
 6. Issue that pull request!
 
-## Any contributions you make will be under the Apache 2 License
-In short, when you submit code changes, your submissions are understood to be under the same [Apache 2 License](https://github.com/trustedshops-public/robotframework-circlecilibrary/blob/main/LICENSE) that covers the project. Feel free to contact the maintainers if that's a concern.
+## Any contributions you make will be under the MIT License
+In short, when you submit code changes, your submissions are understood to be under the same [MIT License](https://opensource.org/licenses/MIT) that covers the project. Feel free to contact the maintainers if that's a concern.
 
 ## Report bugs using GitHub's issues
 We use GitHub issues to track public bugs. Report a bug by opening a new issue, it's that easy!
@@ -43,7 +43,7 @@ People *love* thorough bug reports. I'm not even kidding.
 To make your life easier there is also a handy template available so feel free to use it.
 
 ## License
-By contributing, you agree that your contributions will be licensed under its Apache 2 License.
+By contributing, you agree that your contributions will be licensed under its MIT License.
 
 ## Developer Certificate of Origin
 Every external contributor needs to sign commits with a valid DCO.

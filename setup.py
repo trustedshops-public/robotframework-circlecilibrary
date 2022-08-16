@@ -1,19 +1,4 @@
 #!/usr/bin/env python3
-"""
-Copyright 2021 Trusted Shops
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
 from setuptools import setup, find_packages
 import unittest
 import re
@@ -48,7 +33,7 @@ setup(
     author_email="thomas.volk@trustedshops.com",
     classifiers=[
         "Programming Language :: Python :: 3.9",
-        "License :: OSI Approved :: Apache Software License",
+        "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Topic :: Software Development :: Testing",
         "Topic :: Software Development :: Testing :: Acceptance",
@@ -58,7 +43,7 @@ setup(
     test_suite="setup.project_test_suite",
     install_requires=requirements,
     url='https://github.com/trustedshops-public/robotframework-circlecilibrary',
-    license='Apache License 2.0',
+    license='MIT License',
     platforms='any',
     python_requires='>=3.9.0'
 )
