@@ -37,10 +37,6 @@ jobs:
       - checkout
       - install
       - run:
-          name: Setup git push with github token
-          command: |
-            git config --global url.https://${GITHUB_TOKEN}@github.com/.insteadOf ssh://git@github.com/
-      - run:
           name: Build robotframework html docs with libdoc
           command: make generate-docs
       - run:
@@ -48,7 +44,7 @@ jobs:
           command: |
             git config user.email "no-reply@trustedshops.com"
             git config user.name "trustedshops-public-cns-bot"
-            npx gh-pages@2.0.1 --dist docs/ --message "docs: Update github pages [ci skip]"
+            npx gh-pages@2.0.1 --dist docs/ --message "docs: Update github pages [ci skip]" --repo "https://${GITHUB_TOKEN}@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git"
 
 workflows:
   version: 2
