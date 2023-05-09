@@ -36,9 +36,10 @@ jobs:
     steps:
       - checkout
       - install
-      - add_ssh_keys:
-          fingerprints:
-            - "9e:af:13:4f:43:96:5d:04:60:07:71:f9:05:1f:d1:e7"
+      - run:
+          name: Setup git push with github token
+          command: |
+            git config --global url.https://${GITHUB_TOKEN}@github.com/.insteadOf ssh://git@github.com/
       - run:
           name: Build robotframework html docs with libdoc
           command: make generate-docs
@@ -62,5 +63,6 @@ workflows:
             branches:
               only:
                 - main
+                - /ci\/.*/
           requires:
             - test
