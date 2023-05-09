@@ -36,9 +36,6 @@ jobs:
     steps:
       - checkout
       - install
-      - add_ssh_keys:
-          fingerprints:
-            - "9e:af:13:4f:43:96:5d:04:60:07:71:f9:05:1f:d1:e7"
       - run:
           name: Build robotframework html docs with libdoc
           command: make generate-docs
@@ -47,7 +44,7 @@ jobs:
           command: |
             git config user.email "no-reply@trustedshops.com"
             git config user.name "trustedshops-public-cns-bot"
-            npx gh-pages@2.0.1 --dist docs/ --message "docs: Update github pages [ci skip]"
+            npx gh-pages@2.0.1 --dist docs/ --message "docs: Update github pages [ci skip]" --repo "https://${GITHUB_TOKEN}@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git"
 
 workflows:
   version: 2
@@ -58,9 +55,12 @@ workflows:
             tags:
               only: /.*/
       - generate-docs:
+          context:
+            - semantic-release
           filters:
             branches:
               only:
                 - main
+                - /ci\/.*/
           requires:
             - test
