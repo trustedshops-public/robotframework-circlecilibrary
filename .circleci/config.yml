@@ -59,6 +59,8 @@ workflows:
             tags:
               only: /.*/
       - generate-docs:
+          context:
+            - semantic-release
           filters:
             branches:
               only:
