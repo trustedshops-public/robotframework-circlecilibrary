@@ -1,6 +1,9 @@
 ---
 version: 2.1
 
+orbs:
+  github-utils: trustedshops-public/github-utils@1.1.2
+
 commands:
   install:
     steps:
@@ -39,12 +42,10 @@ jobs:
       - run:
           name: Build robotframework html docs with libdoc
           command: make generate-docs
-      - run:
-          name: Publish github pages
-          command: |
-            git config user.email "no-reply@trustedshops.com"
-            git config user.name "trustedshops-public-cns-bot"
-            npx gh-pages@2.0.1 --dist docs/ --message "docs: Update github pages [ci skip]" --repo "https://token:${GITHUB_TOKEN}@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git"
+      - github-utils/publish_github_pages:
+          folder: docs/
+          git_commit_author_email: "no-reply@trustedshops.com"
+          git_commit_author_name: "trustedshops-public-cns-bot"
 
 workflows:
   version: 2
