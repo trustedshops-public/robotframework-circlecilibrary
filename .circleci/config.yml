@@ -28,14 +28,14 @@ commands:
 jobs:
   test:
     docker:
-      - image: cimg/python:3.11-node
+      - image: cimg/python:3.12-node
     steps:
       - checkout
       - install
       - unittests
   generate-docs:
     docker:
-      - image: cimg/python:3.11-node
+      - image: cimg/python:3.12-node
     steps:
       - checkout
       - install
